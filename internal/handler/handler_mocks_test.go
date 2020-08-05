@@ -115,17 +115,17 @@ func (m *MockAuthProvider) EXPECT() *MockAuthProviderMockRecorder {
 	return m.recorder
 }
 
-// VerifyAccessKey mocks base method.
-func (m *MockAuthProvider) VerifyAccessKey(ctx context.Context, accessKey string) (*auth.AccessKey, error) {
+// VerifyKey mocks base method.
+func (m *MockAuthProvider) VerifyKey(ctx context.Context, accessKey string) (*auth.AccessKey, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "VerifyAccessKey", ctx, accessKey)
+	ret := m.ctrl.Call(m, "VerifyKey", ctx, accessKey)
 	ret0, _ := ret[0].(*auth.AccessKey)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// VerifyAccessKey indicates an expected call of VerifyAccessKey.
+// VerifyKey indicates an expected call of VerifyKey.
 func (mr *MockAuthProviderMockRecorder) VerifyAccessKey(ctx, accessKey interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VerifyAccessKey", reflect.TypeOf((*MockAuthProvider)(nil).VerifyAccessKey), ctx, accessKey)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VerifyKey", reflect.TypeOf((*MockAuthProvider)(nil).VerifyKey), ctx, accessKey)
 }

@@ -13,14 +13,16 @@ import (
 	"github.com/cubny/cart/internal/service"
 	"github.com/cubny/cart/internal/storage/sqlite3"
 
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
 )
 
 func main() {
 	var (
-		optsAddr = flag.String("addr", ":8080", "HTTP bind address")
-		dataPath = flag.String("data", "/app/data/cart.db", "Path to the sqlite3 data file")
-		migrate  = flag.Bool("migrate", false, "if migrate is set the migration will be performed")
+		optsAddr    = flag.String("addr", ":8080", "HTTP bind address")
+		metricsAddr = flag.String("metricsAddr", ":8081", "Metrics HTTP bind address")
+		dataPath    = flag.String("data", "/app/data/cart.db", "Path to the sqlite3 data file")
+		migrate     = flag.Bool("migrate", false, "if migrate is set the migration will be performed")
 	)
 	flag.Parse()
 
@@ -80,6 +82,11 @@ func main() {
 			panic(err)
 		}
 		close(idleConnsClosed)
+	}()
+
+	go func() {
+		log.Debugf("starting metrics server %s", *metricsAddr)
+		log.Fatal(http.ListenAndServe(*metricsAddr, promhttp.Handler()))
 	}()
 
 	log.Printf("HTTP Server starting %s", *optsAddr)

@@ -9,7 +9,21 @@ import (
 	"github.com/cubny/cart/internal/auth"
 
 	"github.com/julienschmidt/httprouter"
+	"github.com/prometheus/client_golang/prometheus"
 )
+
+var (
+	api500Count = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Namespace: "cart",
+			Name:      "error_500_counter",
+			Help:      "Counter of 500 responses of cart api",
+		}, []string{"method", "reason"})
+)
+
+func init() {
+	prometheus.MustRegister(api500Count)
+}
 
 // ServiceProvided contains all the business logic
 type ServiceProvider interface {
@@ -22,7 +36,7 @@ type ServiceProvider interface {
 
 // AuthProvider provides the client to interact with the auth service
 type AuthProvider interface {
-	VerifyAccessKey(ctx context.Context, accessKey string) (*auth.AccessKey, error)
+	VerifyKey(ctx context.Context, accessKey string) (*auth.AccessKey, error)
 }
 
 // Handler handles http requests

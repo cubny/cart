@@ -5,9 +5,7 @@ import (
 	"time"
 )
 
-var (
-	ErrInvalidUserID = errors.New("userID is not valid")
-)
+var ErrInvalidUserID = errors.New("userID is not valid")
 
 // Cart holds the basic data of a shopping cart
 type Cart struct {
@@ -26,6 +24,7 @@ type Item struct {
 	ProductID int64 `json:"product_id"`
 	CartID    int64 `json:"cart_id"`
 	Quantity  int64 `json:"quantity"`
+
 	// Price is the total price of the item, i.e. product's price * quantity
 	Price     Price     `json:"price"`
 	CreatedAt time.Time `json:"-"`

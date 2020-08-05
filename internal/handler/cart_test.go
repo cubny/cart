@@ -20,7 +20,7 @@ func TestHandler_CreateCart(t *testing.T) {
 	authMock := handler.NewMockAuthProvider(ctrl)
 	authMock.EXPECT().
 		VerifyAccessKey(gomock.Any(), "abc123456").
-		Return(&auth.AccessKey{UserID: 1, AccessKey: "abc123456"}, nil).AnyTimes()
+		Return(&auth.AccessKey{UserID: 1, Key: "abc123456"}, nil).AnyTimes()
 	authMock.EXPECT().
 		VerifyAccessKey(gomock.Any(), "unauthorised").
 		Return(nil, auth.ErrNotFound).AnyTimes()
@@ -60,7 +60,7 @@ func TestHandler_AddItem(t *testing.T) {
 	authMock := handler.NewMockAuthProvider(ctrl)
 	authMock.EXPECT().
 		VerifyAccessKey(gomock.Any(), "abc123456").
-		Return(&auth.AccessKey{UserID: 1, AccessKey: "abc123456"}, nil).AnyTimes()
+		Return(&auth.AccessKey{UserID: 1, Key: "abc123456"}, nil).AnyTimes()
 	authMock.EXPECT().
 		VerifyAccessKey(gomock.Any(), "unauthorised").
 		Return(nil, auth.ErrNotFound).AnyTimes()
@@ -116,7 +116,7 @@ func TestHandler_RemoveItem(t *testing.T) {
 	authMock := handler.NewMockAuthProvider(ctrl)
 	authMock.EXPECT().
 		VerifyAccessKey(gomock.Any(), "abc123456").
-		Return(&auth.AccessKey{UserID: 1, AccessKey: "abc123456"}, nil).AnyTimes()
+		Return(&auth.AccessKey{UserID: 1, Key: "abc123456"}, nil).AnyTimes()
 	authMock.EXPECT().
 		VerifyAccessKey(gomock.Any(), "unauthorised").
 		Return(nil, auth.ErrNotFound).AnyTimes()
@@ -153,7 +153,7 @@ func TestHandler_EmptyCart(t *testing.T) {
 	authMock := handler.NewMockAuthProvider(ctrl)
 	authMock.EXPECT().
 		VerifyAccessKey(gomock.Any(), "abc123456").
-		Return(&auth.AccessKey{UserID: 1, AccessKey: "abc123456"}, nil).AnyTimes()
+		Return(&auth.AccessKey{UserID: 1, Key: "abc123456"}, nil).AnyTimes()
 	authMock.EXPECT().
 		VerifyAccessKey(gomock.Any(), "unauthorised").
 		Return(nil, auth.ErrNotFound).AnyTimes()

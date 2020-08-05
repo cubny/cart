@@ -9,5 +9,5 @@ RUN go build -mod=vendor -o bin/cart github.com/cubny/cart/cmd/...
 
 FROM alpine:latest
 COPY --from=buildenv /app/bin/* /app/bin/
-EXPOSE 8080
+EXPOSE 8080 8081
 CMD ["/app/bin/cart"]

@@ -20,7 +20,7 @@ func SetUserAuthAccessKey(ctx context.Context, accessKey *auth.AccessKey) (conte
 		return nil, errors.New("context is required")
 	case accessKey == nil:
 		return nil, errors.New("access key is required")
-	case accessKey.AccessKey == "":
+	case accessKey.Key == "":
 		return nil, errors.New("access key is required")
 	}
 

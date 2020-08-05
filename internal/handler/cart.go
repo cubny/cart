@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"github.com/prometheus/client_golang/prometheus"
 	"net/http"
 	"strconv"
 
@@ -19,6 +20,8 @@ import (
 func (h *Handler) createCart(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	accessKey, err := ctxutil.GetUserAuthAccessKey(r.Context())
 	if err != nil {
+		log.WithError(err).Errorf("createCart: getUserAuthAccessKey %s", err)
+		api500Count.With(prometheus.Labels{"method": "createCart", "reason": "context"}).Inc()
 		_ = jsonerror.InternalError(w, "cannot retrieve user from accessKey")
 		return
 	}
@@ -29,13 +32,16 @@ func (h *Handler) createCart(w http.ResponseWriter, r *http.Request, _ httproute
 		_ = jsonerror.InvalidParams(w, "user is invalid")
 		return
 	case err != nil:
-		log.WithError(err).Errorf("createCart: %s", err)
+		log.WithError(err).Errorf("createCart: service %s", err)
+		api500Count.With(prometheus.Labels{"method": "createCart", "reason": "service"}).Inc()
 		_ = jsonerror.InternalError(w, "cannot create cart")
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
 	if err := json.NewEncoder(w).Encode(c); err != nil {
+		log.WithError(err).Errorf("createCart: encoder %s", err)
+		api500Count.With(prometheus.Labels{"method": "createCart", "reason": "encoder"}).Inc()
 		_ = jsonerror.InternalError(w, "cannot encode response")
 		return
 	}
@@ -46,6 +52,8 @@ func (h *Handler) createCart(w http.ResponseWriter, r *http.Request, _ httproute
 func (h *Handler) addItem(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	accessKey, err := ctxutil.GetUserAuthAccessKey(r.Context())
 	if err != nil {
+		log.WithError(err).Errorf("addItem: GetUserAuthAccessKey %s", err)
+		api500Count.With(prometheus.Labels{"method": "addItem", "reason": "context"}).Inc()
 		_ = jsonerror.InternalError(w, "cannot retrieve user from accessKey")
 		return
 	}
@@ -82,12 +90,16 @@ func (h *Handler) addItem(w http.ResponseWriter, r *http.Request, p httprouter.P
 		_ = jsonerror.BadRequest(w, "an item with the same product exists in the cart")
 		return
 	case err != nil:
+		log.WithError(err).Errorf("addItem: service %s", err)
+		api500Count.With(prometheus.Labels{"method": "addItem", "reason": "service"}).Inc()
 		_ = jsonerror.InternalError(w, "could not add item to cart")
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
 	if err := json.NewEncoder(w).Encode(item); err != nil {
+		log.WithError(err).Errorf("addItem: encoder %s", err)
+		api500Count.With(prometheus.Labels{"method": "addItem", "reason": "encoder"}).Inc()
 		_ = jsonerror.InternalError(w, "cannot decode item")
 		return
 	}
@@ -98,6 +110,8 @@ func (h *Handler) addItem(w http.ResponseWriter, r *http.Request, p httprouter.P
 func (h *Handler) removeItem(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	accessKey, err := ctxutil.GetUserAuthAccessKey(r.Context())
 	if err != nil {
+		log.WithError(err).Errorf("removeItem: GetUserAuthAccessKey %s", err)
+		api500Count.With(prometheus.Labels{"method": "removeItem", "reason": "context"}).Inc()
 		_ = jsonerror.InternalError(w, "cannot retrieve user from accessKey")
 		return
 	}
@@ -117,7 +131,8 @@ func (h *Handler) removeItem(w http.ResponseWriter, r *http.Request, p httproute
 		_ = jsonerror.NotFound(w, "cart does not exist")
 		return
 	case err != nil:
-		log.WithError(err).Errorf("removeItem: service could not remove item")
+		log.WithError(err).Errorf("removeItem: service %s", err)
+		api500Count.With(prometheus.Labels{"method": "removeItem", "reason": "service"}).Inc()
 		_ = jsonerror.InternalError(w, "could not remove item")
 	}
 
@@ -134,6 +149,8 @@ func (h *Handler) emptyCart(w http.ResponseWriter, r *http.Request, p httprouter
 	// DELETE all items of this resource
 	accessKey, err := ctxutil.GetUserAuthAccessKey(r.Context())
 	if err != nil {
+		log.WithError(err).Errorf("emptyCart: GetUserAuthAccessKey %s", err)
+		api500Count.With(prometheus.Labels{"method": "emptyCart", "reason": "context"}).Inc()
 		_ = jsonerror.InternalError(w, "cannot retrieve user from accessKey")
 		return
 	}
@@ -150,7 +167,8 @@ func (h *Handler) emptyCart(w http.ResponseWriter, r *http.Request, p httprouter
 		_ = jsonerror.NotFound(w, "cart does not exist")
 		return
 	case err != nil:
-		log.WithError(err).Errorf("emptyCart: service could not empty cart")
+		log.WithError(err).Errorf("emptyCart: service %s", err)
+		api500Count.With(prometheus.Labels{"method": "emptyCart", "reason": "service"}).Inc()
 		_ = jsonerror.InternalError(w, "could not empty cart")
 		return
 	}

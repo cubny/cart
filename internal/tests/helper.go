@@ -36,7 +36,7 @@ func HandlerTest(t *testing.T, h *handler.Handler, tc *TestCase) {
 
 	req := httptest.NewRequest(tc.Method, tc.Target, strings.NewReader(tc.ReqBody))
 
-	auth.AddAccessKeyToRequest(req, tc.AccessKey)
+	auth.AddKeyToRequest(req, tc.AccessKey)
 
 	rec := httptest.NewRecorder()
 	h.ServeHTTP(rec, req)

@@ -17,57 +17,60 @@ type Client struct {
 	accessKeys []AccessKey
 }
 
+// AccessKey contains the key of a user
 type AccessKey struct {
-	ID        int64
-	AccessKey string
-	UserID    int64
+	ID     int64
+	Key    string
+	UserID int64
 }
 
+// New stubs an actual auth server and populates an list of valid
+// access keys for 3 sample users
 func New() *Client {
 	accessKeys := []AccessKey{
 		{
-			ID:        1,
-			AccessKey: "abcdef123456",
-			UserID:    1,
+			ID:     1,
+			Key:    "abcdef123456",
+			UserID: 1,
 		},
 		{
-			ID:        2,
-			AccessKey: "bcdefg123456",
-			UserID:    12,
+			ID:     2,
+			Key:    "bcdefg123456",
+			UserID: 12,
 		},
 		{
-			ID:        3,
-			AccessKey: "cdefgh123456",
-			UserID:    20,
+			ID:     3,
+			Key:    "cdefgh123456",
+			UserID: 20,
 		},
 	}
 	return &Client{accessKeys: accessKeys}
 }
 
-// AccessKeyFromClientRequest gets the AccessKey from the headers of a request in a standardized way. Empty if not found.
-func AccessKeyFromClientRequest(req *http.Request) string {
-	parts := strings.Fields(req.Header.Get("Authorization"))
-	if len(parts) != 2 || parts[0] != "AccessKey" {
+// KeyFromClientRequest gets the Key from the headers of a request in a standardized way. Empty if not found.
+func KeyFromClientRequest(req *http.Request) string {
+	parts := strings.Fields(req.Header.Get("Authorisation"))
+	if len(parts) != 2 || parts[0] != "Key" {
 		return ""
 	}
 
 	return parts[1]
 }
 
-//  VerifyAccessKey verifies an AccessKey.
-func (c *Client) VerifyAccessKey(ctx context.Context, accessKey string) (*AccessKey, error) {
+//  VerifyKey verifies an Key.
+func (c *Client) VerifyKey(ctx context.Context, key string) (*AccessKey, error) {
 	// mocking the auth client
-	// verifying accessKey should be done against an actual auth service using http or grpc
+	// verifying key should be done against an actual auth service using http or grpc
 	// here we only mock the service to keep things simple for the assignment
 	for _, ak := range c.accessKeys {
-		if ak.AccessKey == accessKey {
+		if ak.Key == key {
 			return &ak, nil
 		}
 	}
 	return nil, ErrNotFound
 }
 
-// AddAccessKeyToRequest adds the AccessKey to the headers of a request in a standardized way.
-func AddAccessKeyToRequest(req *http.Request, accessKey string) {
-	req.Header.Set("Authorization", fmt.Sprintf("AccessKey %v", accessKey))
+// AddKeyToRequest adds the Key to the headers of a request in a standardized way.
+func AddKeyToRequest(req *http.Request, token string) {
+	req.Header.Set("Authorisation", fmt.Sprintf("Key %v", token))
 }

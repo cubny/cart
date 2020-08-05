@@ -61,15 +61,15 @@ func (middleware *Middleware) Chain(middlewares ...MiddlewareHandle) MiddlewareC
 // Authorise checks whether client is auth to make the request.
 func (middleware *Middleware) Authorise(next httprouter.Handle) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-		key := auth.AccessKeyFromClientRequest(r)
+		key := auth.KeyFromClientRequest(r)
 
 		if key == "" {
 			_ = jsonerror.Unauthorised(w, "incorrect access_key")
 			return
 		}
 
-		// Received an AccessKey, verify it.
-		accessKey, err := middleware.auth.VerifyAccessKey(r.Context(), key)
+		// Received an Key, verify it.
+		accessKey, err := middleware.auth.VerifyKey(r.Context(), key)
 		if err != nil {
 			_ = jsonerror.Unauthorised(w, "incorrect access_key")
 			return
