@@ -29,7 +29,8 @@ func (h *Handler) createCart(w http.ResponseWriter, r *http.Request, _ httproute
 		_ = jsonerror.InvalidParams(w, "user is invalid")
 		return
 	case err != nil:
-		_ = jsonerror.InternalError(w, "cannot create c")
+		log.WithError(err).Errorf("createCart: %s", err)
+		_ = jsonerror.InternalError(w, "cannot create cart")
 		return
 	}
 
